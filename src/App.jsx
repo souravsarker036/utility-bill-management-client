@@ -1,19 +1,12 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import RoutesApp from "./router/Routes.jsx";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-     <div className="text-center mt-20">
-      <h1 className="text-4xl font-bold text-blue-600">Tailwind + DaisyUI Working ✅</h1>
-      <button className="btn btn-primary mt-5">Click Me</button>
-    </div> 
-    </>
-  )
+    <div className="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
+      <RoutesApp />
+    </div>
+  );
 }
 
-export default App
+export default App;
