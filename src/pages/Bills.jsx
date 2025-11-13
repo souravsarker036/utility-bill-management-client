@@ -14,9 +14,9 @@ const Bills = () => {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const perPage = 6;
-
   const [params] = useSearchParams();
 
+  // Fetch bills
   useEffect(() => {
     let mounted = true;
     setLoading(true);
@@ -27,17 +27,19 @@ const Bills = () => {
           setFiltered(res.data || []);
         }
       })
-      .catch(() => {})
+      .catch(err => console.error(err))
       .finally(() => mounted && setLoading(false));
+
     return () => mounted = false;
   }, [api]);
 
-  // set category from query param
+  // Get category from URL param
   useEffect(() => {
     const cat = params.get("category");
     if (cat) setCategory(cat);
   }, [params]);
 
+  // Filter bills
   useEffect(() => {
     let data = [...bills];
     if (category) data = data.filter(b => b.category === category);
@@ -50,12 +52,16 @@ const Bills = () => {
   const current = filtered.slice((page - 1) * perPage, page * perPage);
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold">All Bills</h2>
+    <div className="space-y-8">
+      <h2 className="text-3xl font-bold">All Bills</h2>
 
-      <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
-        <select value={category} onChange={e => setCategory(e.target.value)}
-                className="select select-bordered w-full sm:w-60">
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="select select-bordered w-full sm:w-64"
+        >
           <option value="">All Categories</option>
           <option value="Electricity">Electricity</option>
           <option value="Gas">Gas</option>
@@ -63,38 +69,47 @@ const Bills = () => {
           <option value="Internet">Internet</option>
         </select>
 
-        <input value={search} onChange={e=>setSearch(e.target.value)}
-               className="input input-bordered w-full sm:w-64" placeholder="Search by title..." />
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="input input-bordered w-full sm:w-64"
+          placeholder="Search by title..."
+        />
       </div>
 
+      {/* Bills */}
       {loading ? (
-        <div className="py-8 flex justify-center"><LoadingSpinner /></div>
+        <div className="py-10 flex justify-center">
+          <LoadingSpinner />
+        </div>
+      ) : current.length > 0 ? (
+        <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {current.map((b) => (
+            <BillCard key={b._id} bill={b} />
+          ))}
+        </motion.div>
       ) : (
-        <>
-          {current.length > 0 ? (
-            <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {current.map(b => <BillCard key={b._id} bill={b} />)}
-            </motion.div>
-          ) : (
-            <div className="py-12 text-center text-gray-500">No bills found.</div>
-          )}
-        </>
+        <div className="py-10 text-center text-gray-400">
+          No bills found. Try another filter or category.
+        </div>
       )}
 
       {/* Pagination */}
-      <div className="flex justify-center mt-6">
-        <div className="join">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i}
-              onClick={() => setPage(i + 1)}
-              className={`join-item btn btn-sm ${page === i + 1 ? "btn-primary" : ""}`}
-            >
-              {i + 1}
-            </button>
-          ))}
+      {filtered.length > perPage && (
+        <div className="flex justify-center mt-8">
+          <div className="join">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => setPage(i + 1)}
+                className={`join-item btn btn-sm ${page === i + 1 ? "btn-primary" : ""}`}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
