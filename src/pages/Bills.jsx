@@ -16,30 +16,26 @@ const Bills = () => {
   const perPage = 6;
   const [params] = useSearchParams();
 
-  // Fetch bills
   useEffect(() => {
-    let mounted = true;
     setLoading(true);
     axios.get(`${api}/bills`)
       .then(res => {
-        if (mounted) {
-          setBills(res.data || []);
-          setFiltered(res.data || []);
-        }
+        const data = res.data.map(b => ({
+          ...b,
+          image: b.image || "https://via.placeholder.com/600x400?text=No+Image"
+        }));
+        setBills(data);
+        setFiltered(data);
       })
-      .catch(err => console.error(err))
-      .finally(() => mounted && setLoading(false));
-
-    return () => mounted = false;
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, [api]);
 
-  // Get category from URL param
   useEffect(() => {
     const cat = params.get("category");
     if (cat) setCategory(cat);
   }, [params]);
 
-  // Filter bills
   useEffect(() => {
     let data = [...bills];
     if (category) data = data.filter(b => b.category === category);
@@ -54,21 +50,14 @@ const Bills = () => {
   return (
     <div className="space-y-8">
       <h2 className="text-3xl font-bold">All Bills</h2>
-
-      {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="select select-bordered w-full sm:w-64"
-        >
+        <select value={category} onChange={(e) => setCategory(e.target.value)} className="select select-bordered w-full sm:w-64">
           <option value="">All Categories</option>
           <option value="Electricity">Electricity</option>
           <option value="Gas">Gas</option>
           <option value="Water">Water</option>
           <option value="Internet">Internet</option>
         </select>
-
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -77,33 +66,21 @@ const Bills = () => {
         />
       </div>
 
-      {/* Bills */}
       {loading ? (
-        <div className="py-10 flex justify-center">
-          <LoadingSpinner />
-        </div>
+        <div className="py-10 flex justify-center"><LoadingSpinner /></div>
       ) : current.length > 0 ? (
         <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {current.map((b) => (
-            <BillCard key={b._id} bill={b} />
-          ))}
+          {current.map((b) => <BillCard key={b._id} bill={b} />)}
         </motion.div>
       ) : (
-        <div className="py-10 text-center text-gray-400">
-          No bills found. Try another filter or category.
-        </div>
+        <div className="py-10 text-center text-gray-400">No bills found.</div>
       )}
 
-      {/* Pagination */}
       {filtered.length > perPage && (
         <div className="flex justify-center mt-8">
           <div className="join">
             {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i}
-                onClick={() => setPage(i + 1)}
-                className={`join-item btn btn-sm ${page === i + 1 ? "btn-primary" : ""}`}
-              >
+              <button key={i} onClick={() => setPage(i + 1)} className={`join-item btn btn-sm ${page === i + 1 ? "btn-primary" : ""}`}>
                 {i + 1}
               </button>
             ))}

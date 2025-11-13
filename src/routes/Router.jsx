@@ -7,6 +7,7 @@ import BillDetails from "../pages/BillDetails";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import MyBills from "../pages/MyBills";
+import Profile from "../pages/Profile";
 import About from "../pages/Extra/About";
 import Help from "../pages/Extra/Help";
 import NotFound from "../pages/NotFound";
@@ -33,6 +34,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <MyBills />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "profile",
+        element: (
+          <PrivateRoute>
+            <Profile />
           </PrivateRoute>
         ),
       },

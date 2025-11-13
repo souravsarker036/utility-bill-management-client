@@ -1,32 +1,68 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const BillCard = ({ bill }) => {
-  const navigate = useNavigate();
+  console.log("BillCard received:", bill);
+
+  const {
+    _id,
+    title = "Untitled Bill",
+    category = "Unknown",
+    amount = "N/A",
+    date = new Date(),
+    location = "Not specified",
+    image,
+    description = "No description provided."
+  } = bill || {};
+
+  const imageUrl = image && typeof image === "string" && image.trim() !== ""
+  ? image
+  : `https://via.placeholder.com/600x400?text=${encodeURIComponent(title.split(' ')[0])}`;
+
+
+  console.log("Final imageUrl:", imageUrl);
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden hover:shadow-lg transition-shadow">
-      <img src={bill.image} alt={bill.title} className="w-full h-44 object-cover" />
-      <div className="p-4">
-        <div className="flex justify-between items-start">
-          <h3 className="text-lg font-semibold">{bill.title}</h3>
-          <span className="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">{bill.category}</span>
-        </div>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 line-clamp-2">{bill.description}</p>
-        <div className="mt-3 flex justify-between items-center">
-          <div className="text-sm">
-            <div className="font-medium">৳{bill.amount}</div>
-            <div className="text-xs text-gray-500">{new Date(bill.date).toLocaleDateString()}</div>
-          </div>
-          <button
-            onClick={() => navigate(`/bills/${bill._id}`)}
-            className="btn btn-sm btn-outline"
-          >
-            See Details
-          </button>
-        </div>
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.3 }}
+      className="card bg-base-100 shadow-md hover:shadow-lg rounded-2xl overflow-hidden border border-gray-700/20"
+    >
+      <div className="relative h-48 w-full bg-gray-200">
+        <img
+          src={imageUrl}
+          alt={title}
+          className="absolute inset-0 h-full w-full object-cover"
+          onError={(e) => {
+            console.error("Image load failed:", imageUrl);
+            e.target.src = "https://via.placeholder.com/600x400?text=Failed";
+          }}
+        />
       </div>
-    </div>
+
+      <div className="card-body p-5 space-y-2">
+        <h3 className="text-xl font-bold line-clamp-1">{title}</h3>
+        <p className="text-sm text-gray-500 line-clamp-2">{description}</p>
+
+        <div className="text-sm space-y-1">
+          <p><span className="font-medium">Category:</span> {category}</p>
+          <p><span className="font-medium">Location:</span> {location}</p>
+          <p><span className="font-medium">Date:</span> {new Date(date).toLocaleDateString()}</p>
+          <p><span className="font-medium">Amount:</span> ${amount}</p>
+        </div>
+
+        <Link
+          to={`/bills/${_id}`}
+          className="btn btn-sm btn-primary w-full mt-3"
+        >
+          View Details
+        </Link>
+      </div>
+    </motion.div>
   );
 };
 

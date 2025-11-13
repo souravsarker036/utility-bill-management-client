@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import LoadingSpinner from "../components/LoadingSpinner";
 import toast from "react-hot-toast";
+import { jsPDF } from "jspdf";
 
 const MyBills = () => {
   const api = import.meta.env.VITE_API_URL;
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingBill, setEditingBill] = useState(null);
+  const [editData, setEditData] = useState({});
   const token = localStorage.getItem("token");
 
   const fetch = async () => {
@@ -14,8 +17,8 @@ const MyBills = () => {
     try {
       const res = await axios.get(`${api}/myBills`, { headers: { Authorization: `Bearer ${token}` } });
       setBills(res.data || []);
-    } catch (err) {
-      toast.error("Failed to fetch");
+    } catch {
+      toast.error("Failed to fetch bills");
     } finally {
       setLoading(false);
     }
@@ -32,6 +35,32 @@ const MyBills = () => {
     } catch {
       toast.error("Delete failed");
     }
+  };
+
+  const startEdit = (bill) => {
+    setEditingBill(bill._id);
+    setEditData({ amount: bill.amount, phone: bill.phone, date: bill.date });
+  };
+
+  const submitEdit = async () => {
+    try {
+      await axios.put(`${api}/myBills/${editingBill}`, editData, { headers: { Authorization: `Bearer ${token}` } });
+      toast.success("Updated successfully");
+      setEditingBill(null);
+      fetch();
+    } catch {
+      toast.error("Update failed");
+    }
+  };
+
+  const downloadPDF = (bill) => {
+    const doc = new jsPDF();
+    doc.text(`Username: ${bill.username}`, 10, 20);
+    doc.text(`Email: ${bill.email}`, 10, 30);
+    doc.text(`Amount: ৳${bill.amount}`, 10, 40);
+    doc.text(`Phone: ${bill.phone}`, 10, 50);
+    doc.text(`Date: ${bill.date}`, 10, 60);
+    doc.save(`${bill.username}_bill.pdf`);
   };
 
   const totalAmount = bills.reduce((s, b) => s + (Number(b.amount) || 0), 0);
@@ -67,11 +96,34 @@ const MyBills = () => {
                   <tr key={b._id}>
                     <td>{b.username}</td>
                     <td>{b.email}</td>
-                    <td>৳{b.amount}</td>
-                    <td>{b.phone}</td>
-                    <td>{b.date}</td>
+                    <td>
+                      {editingBill === b._id ? (
+                        <input type="number" value={editData.amount} onChange={e => setEditData({ ...editData, amount: e.target.value })} className="input input-xs" />
+                      ) : `৳${b.amount}`}
+                    </td>
+                    <td>
+                      {editingBill === b._id ? (
+                        <input type="text" value={editData.phone} onChange={e => setEditData({ ...editData, phone: e.target.value })} className="input input-xs" />
+                      ) : b.phone}
+                    </td>
+                    <td>
+                      {editingBill === b._id ? (
+                        <input type="date" value={editData.date} onChange={e => setEditData({ ...editData, date: e.target.value })} className="input input-xs" />
+                      ) : b.date}
+                    </td>
                     <td className="space-x-2">
-                      <button onClick={()=>remove(b._id)} className="btn btn-xs btn-error">Delete</button>
+                      {editingBill === b._id ? (
+                        <>
+                          <button onClick={submitEdit} className="btn btn-xs btn-success">Save</button>
+                          <button onClick={() => setEditingBill(null)} className="btn btn-xs btn-outline">Cancel</button>
+                        </>
+                      ) : (
+                        <>
+                          <button onClick={() => startEdit(b)} className="btn btn-xs btn-primary">Update</button>
+                          <button onClick={() => remove(b._id)} className="btn btn-xs btn-error">Delete</button>
+                          <button onClick={() => downloadPDF(b)} className="btn btn-xs btn-secondary">Download PDF</button>
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))}

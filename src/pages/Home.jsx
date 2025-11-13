@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import BillCard from "../components/BillCard";
 import LoadingSpinner from "../components/LoadingSpinner";
+import Banner from "../components/Banner";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -12,27 +13,27 @@ const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-  let mounted = true;
-  setLoading(true);
+    let mounted = true;
+    setLoading(true);
 
-  const fetchData = async () => {
-    try {
-      console.log("Fetching latest bills from:", `${api}/bills/latest`);
-      const res = await axios.get(`${api}/bills/latest`);
-      console.log("Latest bills response:", res.data); // এখানে দেখবে data আসছে কিনা
-      if (mounted) setLatest(res.data || []);
-    } catch (err) {
-      console.error("Axios error:", err);
-    } finally {
-      if (mounted) setLoading(false);
-    }
-  };
+    const fetchData = async () => {
+      try {
+        console.log("Fetching latest bills from:", `${api}/bills/latest`);
+        const res = await axios.get(`${api}/bills/latest`);
+        console.log("Latest bills response:", res.data);
+        if (mounted) setLatest(res.data || []);
+      } catch (err) {
+        console.error("Axios error:", err);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
 
-  fetchData();
-
-  return () => { mounted = false };
-}, [api]);
-
+    fetchData();
+    return () => {
+      mounted = false;
+    };
+  }, [api]);
 
   const categories = [
     { title: "Electricity", emoji: "⚡", color: "from-yellow-400 to-orange-500" },
@@ -43,21 +44,26 @@ const Home = () => {
 
   return (
     <div className="space-y-10">
-      {/* Banner */}
-      <div className="rounded-2xl p-10 text-white bg-gradient-to-r from-indigo-500 to-pink-500 shadow-lg">
-        <h1 className="text-4xl font-bold tracking-tight">Utility Bill Manager</h1>
-        <p className="mt-3 text-lg opacity-90">
+      {/* ✅ Banner Section */}
+      <Banner />
+
+      {/* Quick Intro / CTA */}
+      <div className="text-center px-4">
+        <h1 className="text-4xl font-bold text-indigo-600">
+          Utility Bill Manager
+        </h1>
+        <p className="mt-2 text-gray-600 text-lg">
           Track, manage & pay your utility bills effortlessly.
         </p>
         <button
           onClick={() => navigate("/bills")}
-          className="mt-5 bg-white text-indigo-600 font-semibold px-6 py-2 rounded-lg hover:bg-indigo-50 transition"
+          className="mt-4 bg-indigo-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-indigo-700 transition"
         >
           Explore Bills
         </button>
       </div>
 
-      {/* Categories */}
+      {/* Categories Section */}
       <section>
         <h2 className="text-2xl font-bold mb-4">Bill Categories</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
@@ -75,7 +81,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Recent Bills */}
+      {/* Recent Bills Section */}
       <section>
         <div className="flex justify-between items-center mb-3">
           <h2 className="text-2xl font-bold">Recent Bills</h2>
@@ -92,7 +98,10 @@ const Home = () => {
             <LoadingSpinner />
           </div>
         ) : Array.isArray(latest) && latest.length > 0 ? (
-          <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <motion.div
+            layout
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
             {latest.map((b) => (
               <BillCard key={b._id} bill={b} />
             ))}

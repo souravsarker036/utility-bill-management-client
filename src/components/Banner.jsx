@@ -1,25 +1,100 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const slides = [
-  { title: "Pay your current month bills quickly", desc: "Secure and easy payments", img: "https://via.placeholder.com/1200x400?text=Pay+Bills" },
-  { title: "Download paid bill history", desc: "PDF export for records", img: "https://via.placeholder.com/1200x400?text=PDF+Reports" },
-  { title: "Track Electricity, Gas, Water & Internet", desc: "All utilities in one place", img: "https://via.placeholder.com/1200x400?text=All+Utilities" },
+  {
+    title: "Pay Your Bills Instantly",
+    desc: "Fast, secure and effortless payments for electricity, gas, water & internet.",
+    img: "https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?q=80&w=1600",
+  },
+  {
+    title: "Download Your Billing Reports",
+    desc: "Generate and save PDF receipts for every transaction — anytime, anywhere.",
+    img: "https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?q=80&w=1600",
+  },
+  {
+    title: "Track All Utilities in One Place",
+    desc: "Simplify your life — manage monthly bills from one powerful dashboard.",
+    img: "https://images.unsplash.com/photo-1597764691457-16ab12c9f8e2?q=80&w=1600",
+  },
 ];
 
 const Banner = () => {
+  const [index, setIndex] = useState(0);
+
+  // Auto-slide every 5 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <div className="carousel w-full rounded-lg overflow-hidden">
-      {slides.map((s, idx) => (
-        <motion.div key={idx} className="carousel-item relative w-full" initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.8}}>
-          <div className="h-56 sm:h-72 md:h-96 w-full bg-cover bg-center flex items-center" style={{ backgroundImage: `url(${s.img})` }}>
-            <div className="bg-black/50 p-6 rounded ml-6 max-w-xl">
-              <h2 className="text-2xl sm:text-3xl font-bold text-white">{s.title}</h2>
-              <p className="text-white mt-2">{s.desc}</p>
+    <div className="relative w-full h-[300px] sm:h-[400px] md:h-[480px] overflow-hidden rounded-2xl shadow-lg">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, scale: 1.05 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.98 }}
+          transition={{ duration: 1 }}
+          className="absolute inset-0"
+        >
+          {/* Background Image */}
+          <div
+            className="w-full h-full bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${slides[index].img})`,
+            }}
+          >
+            {/* Dark overlay with gradient */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent flex items-center">
+              <div className="px-8 sm:px-16 max-w-2xl text-white space-y-4">
+                <motion.h2
+                  key={slides[index].title}
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-2xl sm:text-4xl font-bold leading-snug"
+                >
+                  {slides[index].title}
+                </motion.h2>
+                <motion.p
+                  key={slides[index].desc}
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="text-sm sm:text-lg text-gray-200"
+                >
+                  {slides[index].desc}
+                </motion.p>
+                <motion.button
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.6 }}
+                  className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-semibold shadow"
+                >
+                  Get Started
+                </motion.button>
+              </div>
             </div>
           </div>
         </motion.div>
-      ))}
+      </AnimatePresence>
+
+      {/* Navigation Dots */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setIndex(i)}
+            className={`w-3 h-3 rounded-full transition-all ${
+              i === index ? "bg-white w-6" : "bg-white/50"
+            }`}
+          />
+        ))}
+      </div>
     </div>
   );
 };
