@@ -7,4 +7,7 @@ export default defineConfig({
   plugins: [react(),
     tailwindcss(),
   ],
+  server: {
+    historyApiFallback: true // <-- This fixes 404 on refresh
+  },
 })

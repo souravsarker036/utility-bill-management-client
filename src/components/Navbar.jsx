@@ -1,55 +1,58 @@
-import React, { useContext, useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthProvider.jsx";
-import { getAuth, signOut } from "firebase/auth";
-import { app } from "../firebase.config";
-import { FiSun, FiMoon } from "react-icons/fi";
-
-const auth = getAuth(app);
+import React, { useState, useContext } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { FaBars } from "react-icons/fa";
 
 const Navbar = () => {
-  const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
-  const [theme, setTheme] = useState('light');
-
-  const handleLogout = () => {
-    signOut(auth).then(() => navigate("/login"));
-  };
-
-  const toggleTheme = () => {
-    if (theme === 'light') {
-      document.documentElement.classList.add('dark');
-      setTheme('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      setTheme('light');
-    }
-  };
+  const { user, logout } = useContext(AuthContext);
+  const [open, setOpen] = useState(false);
 
   return (
-    <nav className="bg-white dark:bg-gray-800 shadow-md py-4">
-      <div className="container mx-auto flex justify-between items-center px-4">
-        <Link to="/" className="font-bold text-xl">UtilityBill</Link>
-        <div className="flex items-center space-x-4">
-          <NavLink className="hover:text-blue-500" to="/">Home</NavLink>
-          <NavLink className="hover:text-blue-500" to="/bills">Bills</NavLink>
+    <nav className="bg-base-100 shadow">
+      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+        <Link to="/" className="font-bold text-xl flex items-center gap-2">
+          <img src="/logo.png" alt="logo" className="w-10 h-10 rounded-full"/>
+          UtilityBills
+        </Link>
+
+        <div className="hidden md:flex gap-4 items-center">
+          <NavLink to="/" className={({isActive})=>isActive?"text-primary font-semibold":""}>Home</NavLink>
+          <NavLink to="/bills" className={({isActive})=>isActive?"text-primary font-semibold":""}>Bills</NavLink>
           {user ? (
             <>
-              <NavLink className="hover:text-blue-500" to="/my-bills">My Pay Bills</NavLink>
-              <NavLink className="hover:text-blue-500" to="/profile">Profile</NavLink>
-              <button onClick={handleLogout} className="btn btn-sm btn-outline">Logout</button>
+              <NavLink to="/my-bills" className={({isActive})=>isActive?"text-primary font-semibold":""}>My Bills</NavLink>
+              <button onClick={logout} className="btn btn-ghost ml-2">Logout</button>
             </>
           ) : (
             <>
-              <NavLink className="hover:text-blue-500" to="/login">Login</NavLink>
-              <NavLink className="hover:text-blue-500" to="/register">Register</NavLink>
+              <NavLink to="/login" className={({isActive})=>isActive?"text-primary font-semibold":""}>Login</NavLink>
+              <NavLink to="/register" className={({isActive})=>isActive?"text-primary font-semibold":""}>Register</NavLink>
             </>
           )}
-          <button onClick={toggleTheme} className="ml-2 text-xl">
-            {theme === 'light' ? <FiMoon /> : <FiSun />}
-          </button>
         </div>
+
+        <button className="md:hidden" onClick={()=>setOpen(!open)}>
+          <FaBars />
+        </button>
       </div>
+
+      {open && (
+        <div className="md:hidden bg-base-100 shadow p-4 flex flex-col gap-2">
+          <Link to="/" onClick={()=>setOpen(false)}>Home</Link>
+          <Link to="/bills" onClick={()=>setOpen(false)}>Bills</Link>
+          {user ? (
+            <>
+              <Link to="/my-bills" onClick={()=>setOpen(false)}>My Bills</Link>
+              <button onClick={()=>{logout(); setOpen(false)}}>Logout</button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" onClick={()=>setOpen(false)}>Login</Link>
+              <Link to="/register" onClick={()=>setOpen(false)}>Register</Link>
+            </>
+          )}
+        </div>
+      )}
     </nav>
   );
 };

@@ -1,12 +1,9 @@
 import React from "react";
-import RoutesApp from "./router/Routes.jsx";
+import { RouterProvider } from "react-router-dom";
+import router from "./routes/Router";
 
-function App() {
-  return (
-    <div className="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
-      <RoutesApp />
-    </div>
-  );
-}
+const App = () => {
+  return <RouterProvider router={router} />;
+};
 
 export default App;
