@@ -9,41 +9,79 @@ const Navbar = () => {
   const [profileOpen, setProfileOpen] = useState(false);
 
   return (
-    <nav className="bg-base-100 shadow">
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+    <nav className="backdrop-blur-lg bg-white/10 dark:bg-black/20 border-b border-white/20 shadow-lg sticky top-0 z-50">
+      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+
         {/* Logo */}
-        <Link to="/" className="font-bold text-xl flex items-center gap-2">
-          <FaRegFileAlt className="text-2xl text-indigo-600" />
+        <Link
+          to="/"
+          className="font-bold text-xl flex items-center gap-2 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-blue-500"
+        >
+          <FaRegFileAlt className="text-2xl text-blue-400" />
           UtilityBills
         </Link>
 
-        {/* Desktop bar */}
+        {/* Desktop Menu */}
+        <div className="hidden md:flex gap-6 items-center text-white/90">
+          {["/", "/bills"].map((path, index) => (
+            <NavLink
+              key={index}
+              to={path}
+              className={({ isActive }) =>
+                `relative hover:text-blue-400 transition font-medium ${
+                  isActive ? "text-blue-400" : ""
+                }`
+              }
+            >
+              {path === "/" ? "Home" : "Bills"}
 
-        <div className="hidden md:flex gap-4 items-center">
-          <NavLink to="/" className={({ isActive }) => isActive ? "text-primary font-semibold" : ""}>Home</NavLink>
-          <NavLink to="/bills" className={({ isActive }) => isActive ? "text-primary font-semibold" : ""}>Bills</NavLink>
+             
+              <span className="absolute left-0 bottom-0 w-full h-[2px] bg-blue-400 scale-x-0 hover:scale-x-100 transition-transform origin-left"></span>
+            </NavLink>
+          ))}
 
           {user ? (
             <div className="relative">
               <button
-                className="flex items-center gap-2 focus:outline-none"
+                className="flex items-center gap-2 hover:text-blue-400 transition"
                 onClick={() => setProfileOpen(!profileOpen)}
               >
                 {user.photo ? (
-                  <img src={user.photo} alt={user.name} className="w-8 h-8 rounded-full" />
+                  <img
+                    src={user.photo}
+                    alt={user.name}
+                    className="w-9 h-9 rounded-full border border-white/30 shadow"
+                  />
                 ) : (
-                  <FaUserCircle className="w-8 h-8 text-gray-600" />
+                  <FaUserCircle className="w-9 h-9 text-blue-300" />
                 )}
                 <span>{user.name}</span>
               </button>
 
               {profileOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-2 flex flex-col gap-2 z-50">
-                  <Link to="/profile" onClick={() => setProfileOpen(false)} className="hover:bg-gray-100 dark:hover:bg-gray-700 rounded p-2">View Profile</Link>
-                  <Link to="/my-bills" onClick={() => setProfileOpen(false)} className="hover:bg-gray-100 dark:hover:bg-gray-700 rounded p-2">My Paid Bills</Link>
+                <div className="absolute right-0 mt-3 w-52 p-3 rounded-xl bg-white/10 dark:bg-black/30 backdrop-blur-xl border border-white/20 shadow-xl flex flex-col gap-2 text-white">
+                  <Link
+                    to="/profile"
+                    onClick={() => setProfileOpen(false)}
+                    className="hover:bg-white/10 rounded p-2"
+                  >
+                    View Profile
+                  </Link>
+
+                  <Link
+                    to="/my-bills"
+                    onClick={() => setProfileOpen(false)}
+                    className="hover:bg-white/10 rounded p-2"
+                  >
+                    My Paid Bills
+                  </Link>
+
                   <button
-                    onClick={() => { logout(); setProfileOpen(false); }}
-                    className="hover:bg-gray-100 dark:hover:bg-gray-700 rounded p-2 text-left"
+                    onClick={() => {
+                      logout();
+                      setProfileOpen(false);
+                    }}
+                    className="hover:bg-white/10 rounded p-2 text-left text-red-300"
                   >
                     Logout
                   </button>
@@ -52,25 +90,31 @@ const Navbar = () => {
             </div>
           ) : (
             <>
-              <NavLink to="/login" className={({ isActive }) => isActive ? "text-primary font-semibold" : ""}>Login</NavLink>
-              <NavLink to="/register" className={({ isActive }) => isActive ? "text-primary font-semibold" : ""}>Register</NavLink>
+              <NavLink to="/login" className="hover:text-blue-400 transition">
+                Login
+              </NavLink>
+              <NavLink to="/register" className="hover:text-blue-400 transition">
+                Register
+              </NavLink>
             </>
           )}
         </div>
 
-        {/* Mobile toggle */}
-
-        <button className="md:hidden" onClick={() => setOpen(!open)}>
+        {/* Mobile Btn */}
+        <button
+          className="md:hidden text-white"
+          onClick={() => setOpen(!open)}
+        >
           <FaBars />
         </button>
       </div>
 
-      {/* Mobile Menu  */}
-
+      {/* Mobile Menu */}
       {open && (
-        <div className="md:hidden bg-base-100 shadow p-4 flex flex-col gap-2">
+        <div className="md:hidden bg-black/50 backdrop-blur-xl border-t border-white/20 p-4 flex flex-col gap-3 text-white">
           <Link to="/" onClick={() => setOpen(false)}>Home</Link>
           <Link to="/bills" onClick={() => setOpen(false)}>Bills</Link>
+
           {user ? (
             <>
               <Link to="/profile" onClick={() => setOpen(false)}>View Profile</Link>

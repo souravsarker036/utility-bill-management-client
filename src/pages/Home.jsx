@@ -18,61 +18,70 @@ const Home = () => {
 
     const fetchData = async () => {
       try {
-        console.log("Fetching latest bills from:", `${api}/bills/latest`);
         const res = await axios.get(`${api}/bills/latest`);
-        console.log("Latest bills response:", res.data);
         if (mounted) setLatest(res.data || []);
       } catch (err) {
-        console.error("Axios error:", err);
+        console.error(err);
       } finally {
         if (mounted) setLoading(false);
       }
     };
 
     fetchData();
-    return () => {
-      mounted = false;
-    };
+    return () => (mounted = false);
   }, [api]);
 
   const categories = [
-    { title: "Electricity", emoji: "⚡", color: "from-yellow-400 to-orange-500" },
-    { title: "Gas", emoji: "🔥", color: "from-red-400 to-red-600" },
-    { title: "Water", emoji: "💧", color: "from-blue-400 to-cyan-500" },
-    { title: "Internet", emoji: "🌐", color: "from-purple-400 to-pink-500" },
+    { title: "Electricity", emoji: "⚡", color: "from-yellow-300 to-orange-400" },
+    { title: "Gas", emoji: "🔥", color: "from-red-300 to-red-500" },
+    { title: "Water", emoji: "💧", color: "from-blue-300 to-cyan-500" },
+    { title: "Internet", emoji: "🌐", color: "from-purple-300 to-pink-500" },
   ];
 
   return (
-    <div className="space-y-10">
-      {/* ✅ Banner Section */}
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="space-y-12 px-4 md:px-8 pb-12"
+    >
+      
+      {/* 🔥 Hero Banner */}
       <Banner />
 
-      {/* Quick Intro / CTA */}
+      {/* 🔥 Title Section */}
       <div className="text-center px-4">
-        <h1 className="text-4xl font-bold text-indigo-600">
+        <h1 className="text-5xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent drop-shadow-md">
           Utility Bill Manager
         </h1>
-        <p className="mt-2 text-gray-600 text-lg">
+        <p className="mt-3 text-gray-200 text-lg">
           Track, manage & pay your utility bills effortlessly.
         </p>
+
         <button
           onClick={() => navigate("/bills")}
-          className="mt-4 bg-indigo-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-indigo-700 transition"
+          className="mt-5 bg-indigo-600 text-white font-semibold px-7 py-3 
+          rounded-xl shadow-lg hover:bg-indigo-700 transition"
         >
           Explore Bills
         </button>
       </div>
 
-      {/* Categories Section */}
+      {/*Categories Section */}
       <section>
-        <h2 className="text-2xl font-bold mb-4">Bill Categories</h2>
+        <h2 className="text-2xl font-bold mb-4 text-gray-300">
+          Bill Categories
+        </h2>
+
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
           {categories.map((c) => (
             <motion.div
               key={c.title}
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.07 }}
               onClick={() => navigate(`/bills?category=${c.title}`)}
-              className={`cursor-pointer p-6 rounded-xl text-center text-white bg-gradient-to-br ${c.color} shadow-md hover:shadow-lg`}
+              className={`cursor-pointer p-6 rounded-2xl text-center text-gray-900 
+              bg-gradient-to-br ${c.color} shadow-md hover:shadow-xl 
+              backdrop-blur-lg bg-opacity-30`}
             >
               <div className="text-4xl">{c.emoji}</div>
               <div className="mt-2 text-lg font-semibold">{c.title}</div>
@@ -84,20 +93,20 @@ const Home = () => {
       {/* Recent Bills Section */}
       <section>
         <div className="flex justify-between items-center mb-3">
-          <h2 className="text-2xl font-bold">Recent Bills</h2>
+          <h2 className="text-2xl font-bold text-gray-300">Recent Bills</h2>
           <button
             onClick={() => navigate("/bills")}
-            className="btn btn-sm btn-outline"
+            className="btn btn-sm btn-outline border-indigo-500 text-indigo-600"
           >
             See all
           </button>
         </div>
 
         {loading ? (
-          <div className="py-8 flex justify-center">
+          <div className="py-10 flex justify-center">
             <LoadingSpinner />
           </div>
-        ) : Array.isArray(latest) && latest.length > 0 ? (
+        ) : latest.length > 0 ? (
           <motion.div
             layout
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
@@ -112,7 +121,7 @@ const Home = () => {
           </div>
         )}
       </section>
-    </div>
+    </motion.div>
   );
 };
 

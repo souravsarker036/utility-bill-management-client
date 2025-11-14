@@ -22,7 +22,7 @@ const slides = [
 const Banner = () => {
   const [index, setIndex] = useState(0);
 
-  // Auto-slide every 5 seconds
+
   useEffect(() => {
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % slides.length);
@@ -41,14 +41,14 @@ const Banner = () => {
           transition={{ duration: 1 }}
           className="absolute inset-0"
         >
-          {/* Background Image */}
+          
           <div
             className="w-full h-full bg-cover bg-center"
             style={{
               backgroundImage: `url(${slides[index].img})`,
             }}
           >
-            {/* Dark overlay with gradient */}
+            
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent flex items-center">
               <div className="px-8 sm:px-16 max-w-2xl text-white space-y-4">
                 <motion.h2
@@ -69,21 +69,14 @@ const Banner = () => {
                 >
                   {slides[index].desc}
                 </motion.p>
-                <motion.button
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                  className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-semibold shadow"
-                >
-                  Get Started
-                </motion.button>
+                
               </div>
             </div>
           </div>
         </motion.div>
       </AnimatePresence>
 
-      {/* Navigation Dots */}
+      
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
         {slides.map((_, i) => (
           <button
