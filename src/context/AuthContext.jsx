@@ -1,4 +1,3 @@
-// src/context/AuthContext.jsx
 import React, { createContext, useEffect, useState } from "react";
 import axios from "axios";
 
@@ -9,7 +8,7 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
 
-  // helper: set token in localStorage
+  // token store local storage
   const saveToken = (token) => {
     localStorage.setItem("token", token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -20,7 +19,7 @@ const AuthProvider = ({ children }) => {
     delete axios.defaults.headers.common['Authorization'];
   };
 
-  // on mount: if token exists, set default header and fetch /users/me
+  
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -37,7 +36,7 @@ const AuthProvider = ({ children }) => {
     }
   }, [api]);
 
-  // call after successful login/register
+  
   const finishLogin = async (token) => {
     try {
       saveToken(token);

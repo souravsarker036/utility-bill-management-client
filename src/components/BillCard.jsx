@@ -38,7 +38,7 @@ const BillCard = ({ bill }) => {
       transition={{ duration: 0.3 }}
       className="card bg-base-100 shadow-md hover:shadow-xl rounded-2xl overflow-hidden border border-gray-300 cursor-pointer"
     >
-      {/* Image */}
+      
       <div className="relative h-48 w-full bg-gray-200 overflow-hidden rounded-t-2xl">
         <img
           src={imageUrl}
@@ -51,7 +51,7 @@ const BillCard = ({ bill }) => {
         />
       </div>
 
-      {/* Card Body */}
+      
       <div className="card-body p-5 space-y-3">
         <h3 className="text-xl font-bold line-clamp-1">{title}</h3>
         <p className="text-sm text-gray-500 line-clamp-2">{description}</p>

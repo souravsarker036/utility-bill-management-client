@@ -12,16 +12,16 @@ const Navbar = () => {
     <nav className="backdrop-blur-lg bg-white/10 dark:bg-black/20 border-b border-white/20 shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
 
-        {/* Logo */}
+        {/* Logo sec */}
         <Link
           to="/"
           className="font-bold text-xl flex items-center gap-2 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-blue-500"
         >
-          <FaRegFileAlt className="text-2xl text-blue-400" />
+          <FaRegFileAlt className="text-2xl text-blue-300" />
           UtilityBills
         </Link>
 
-        {/* Desktop Menu */}
+        {/* desktop Menu */}
         <div className="hidden md:flex gap-6 items-center text-white/90">
           {["/", "/bills"].map((path, index) => (
             <NavLink
