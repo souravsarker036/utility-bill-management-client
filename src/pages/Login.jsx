@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import React, { useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
@@ -35,21 +34,65 @@ const Login = () => {
     }
   };
 
-  return (
-    <div className="max-w-md mx-auto mt-12 bg-white dark:bg-gray-800 p-6 rounded shadow">
-      <h2 className="text-2xl font-bold mb-4">Login</h2>
-      <form onSubmit={submit} className="space-y-3">
-        <input value={email} onChange={e => setEmail(e.target.value)} required className="input input-bordered w-full" placeholder="Email" type="email" />
-        <input value={password} onChange={e => setPassword(e.target.value)} required className="input input-bordered w-full" placeholder="Password" type="password" />
-        <button type="submit" className={`btn btn-primary w-full ${loading ? "loading" : ""}`}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
-      <div className="mt-4 text-sm">
-        Don't have an account? <Link to="/register" className="text-primary">Register</Link>
+    return (
+    <div className="min-h-screen flex items-center justify-center bg-[linear-gradient(135deg,#0a0f2d,#0f1e47,#162a63,#1b3a7a)] bg-fixed p-4">
+      <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-8 sm:p-10 transition-all duration-500">
+        <h2 className="text-3xl font-extrabold text-gray-800 dark:text-gray-100 text-center mb-6">
+          Welcome Back
+        </h2>
+        <p className="text-center text-gray-500 dark:text-gray-300 mb-8">
+          Sign in to your account to continue
+        </p>
+        <form onSubmit={submit} className="space-y-5">
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-300">
+              Email
+            </label>
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              type="email"
+              placeholder="you@example.com"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600 transition-all"
+            />
+          </div>
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-300">
+              Password
+            </label>
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              type="password"
+              placeholder="********"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600 transition-all"
+            />
+          </div>
+          <button
+            type="submit"
+            className={`w-full py-3 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all ${
+              loading ? "opacity-70 cursor-not-allowed" : ""
+            }`}
+            disabled={loading}
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+        <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+          Don't have an account?{" "}
+          <Link
+            to="/register"
+            className="font-medium text-blue-500 dark:text-blue-400 hover:underline"
+          >
+            Register
+          </Link>
+        </div>
       </div>
     </div>
   );
+
 };
 
 export default Login;

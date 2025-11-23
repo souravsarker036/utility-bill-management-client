@@ -44,7 +44,7 @@ const Help = () => {
             <p>
               Please check your network connection and ensure you’re paying for
               the current month’s bill. If it still fails, contact support at{" "}
-              <span className="text-primary">support@smartbills.io</span>.
+              <span className="text-primary">support@UtilityBillsTeam.io</span>.
             </p>
           </div>
         </details>

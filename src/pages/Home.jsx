@@ -46,10 +46,10 @@ const Home = () => {
       className="space-y-12 px-4 md:px-8 pb-12"
     >
       
-      {/* 🔥 Hero Banner */}
+      {/* Hero Banner */}
       <Banner />
 
-      {/* 🔥 Title Section */}
+      {/* Title Section */}
       <div className="text-center px-4">
         <h1 className="text-5xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent drop-shadow-md">
           Utility Bill Manager
