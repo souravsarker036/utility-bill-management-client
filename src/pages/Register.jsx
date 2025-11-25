@@ -23,7 +23,7 @@ const Register = () => {
       });
       const token = res.data?.token;
       if (!token) throw new Error("No token returned");
-      await finishLogin(token); // saves token and fetches /users/me
+      await finishLogin(token); 
       toast.success("Registered & logged in");
       navigate("/");
     } catch (err) {

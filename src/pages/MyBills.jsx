@@ -91,13 +91,13 @@ const MyBills = () => {
     y += 8;
   }
 
-  // Add bill image
+  
   if (bill.image) {
     const img = new Image();
-    img.crossOrigin = "anonymous"; // prevent CORS issues
+    img.crossOrigin = "anonymous"; 
     img.src = bill.image;
     img.onload = () => {
-      doc.addImage(img, "JPEG", 10, y, 80, 60); // adjust size as needed
+      doc.addImage(img, "JPEG", 10, y, 80, 60); 
       doc.save(`${bill.title}_bill.pdf`);
     };
     img.onerror = () => {
